@@ -1,0 +1,68 @@
+﻿@using GoogleReCaptchaV3.Models
+@model LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+@inject IConfiguration configuration
+@{
+    var siteKey = configuration["ReCaptchaSettings:SiteKey"];
+}
+
+<script src="https://www.google.com/recaptcha/api.js"></script>
+<script>
+    function onSubmit(token) {
+      document.getElementById("contact_form_id").submit();
+    }
+</script>
+
+<div class="row">
+    <div class="col-lg-8 mx-auto rounded border mb-3 px-5 py-4">
+        <h4 class="mb-5 text-center">Contact Form</h4>
+
+        @if(Model.errorMessage.Length > 0)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>@Model.errorMessage</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        else if(Model.successMessage.Length >0)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>@Model.successMessage</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <form method="post" id="contact_form_id">
+            <div class="mb-3">
+                <label class="form-label">Name*</label>
+                <input class="form-control" asp-for="Name" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Email*</label>
+                <input class="form-control" asp-for="Email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Subject*</label>
+                <input class="form-control" asp-for="Subject" />
+                <span asp-validation-for="Subject" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Message*</label>
+                <textarea class="form-control" asp-for="Message" rows="5"></textarea>
+                <span asp-validation-for="Message" class="text-danger"></span>
+            </div>
+
+
+            <button class="g-recaptcha btn btn-primary"
+                    data-sitekey="@siteKey"
+                    data-callback='onSubmit'
+                    data-action='submit'>
+                Submit
+            </button>
+        </form>
+    </div>
+</div>
